@@ -15,7 +15,7 @@ TARGET = akinator
 SourcePrefix = src/
 BuildPrefix = build/
 BuildFolder = build
-Include = -Iinclude -Ilib/Simple_tree/include -Ilib/Simple_tree/lib/Color_console_output/include -Ilib/Simple_tree/lib/Data_buffer/include
+Include = -Iinclude -Ilib/Simple_tree/include
 
 Sources = Akinator.cpp
 Main = main.cpp
