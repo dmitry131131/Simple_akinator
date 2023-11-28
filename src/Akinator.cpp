@@ -13,17 +13,21 @@ static void akinator_guess_object_recursive(TreeSegment* segment);
 
 akinatorErrorCode main_akinator_loop()
 {
-    akinatorErrorCode error = NO_AKINATOR_ERRORS;
+    #define RETURN(code) do {         \
+        tree_dtor(&tree);             \
+        return code;                  \
+    }while(0)
 
+    akinatorErrorCode error = NO_AKINATOR_ERRORS;
     TreeData tree = {};
 
     char ch = 0;
     bool loop_enable = true;
     while (loop_enable)
     {
-        error = draw_akinator_menu();
+        draw_akinator_menu();
 
-        ch = getchar();
+        ch = (char) getchar();
         switch (ch)
         {
         case '1':
@@ -38,15 +42,22 @@ akinatorErrorCode main_akinator_loop()
             break;
 
         case '4':
-
+            if ((error = read_akinator_base(&tree)))
+            {
+                printf("Try again!\n");
+            }
             break;
 
         case '5':
 
             break;
 
+        case '6':
+            tree_dump(&tree);
+            break;
+
         case 'q':
-            
+            RETURN(error);
             break;
         
         default:
@@ -54,28 +65,31 @@ akinatorErrorCode main_akinator_loop()
             break;
         }
     }
-    
 
-    return error;
+    RETURN(error);
+    #undef RETURN
 }
 
-akinatorErrorCode read_akinator_base(TreeData* tree, const char* filename)
+akinatorErrorCode read_akinator_base(TreeData* tree)
 {
     assert(tree);
-    assert(filename);
 
-    treeErrorCode tree_err = NO_TREE_ERRORS;
+    treeErrorCode error = NO_TREE_ERRORS;
+    char filename[FILENAME_LEN] = {};
 
-    if (tree_err = read_tree_from_file(tree, filename))
+    printf("Enter filename to read:\n");
+    scanf("%s", filename);
+
+    if (error = read_tree_from_file(tree, filename))
     {
-        print_tree_error(tree_err);
+        print_tree_error(error);
         return READ_TREE_ERROR;
     }
 
     return NO_AKINATOR_ERRORS;
 }
 
-akinatorErrorCode draw_akinator_menu()
+void draw_akinator_label()
 {
     printf(
         " █████╗ ██╗  ██╗██╗███╗   ██╗ █████╗ ████████╗ ██████╗ ██████╗ \n"
@@ -84,18 +98,21 @@ akinatorErrorCode draw_akinator_menu()
         "██╔══██║██╔═██╗ ██║██║╚██╗██║██╔══██║   ██║   ██║   ██║██╔══██╗\n"
         "██║  ██║██║  ██╗██║██║ ╚████║██║  ██║   ██║   ╚██████╔╝██║  ██║\n"
         "╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝\n\n"
-    );
+    );   
+}
+
+void draw_akinator_menu()
+{
     printf(
-        "Select mode:"
+        "Select mode:\n"
         "1 - Guess object\n"
         "2 - Give obgect description\n"
         "3 - Compare 2 objects\n"
         "4 - Read akinator tree\n"
         "5 - Write akinator tree\n"
-        "q - Exit"
+        "6 - Show akinator tree\n"
+        "q - Exit\n"
     );
-
-    return NO_AKINATOR_ERRORS;
 }
 
 akinatorErrorCode akinator_guess_object(TreeData* tree)
