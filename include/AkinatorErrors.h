@@ -8,7 +8,8 @@
 
 enum akinatorErrorCode {
     NO_AKINATOR_ERRORS,
-    READ_TREE_ERROR
+    READ_AKINATOR_TREE_ERROR,
+    WRIRE_AKINATOR_TREE_ERROR
 };
 
 void print_akinator_error(akinatorErrorCode error);

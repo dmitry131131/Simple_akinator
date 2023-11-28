@@ -27,7 +27,7 @@ akinatorErrorCode main_akinator_loop()
     {
         draw_akinator_menu();
 
-        ch = (char) getchar();
+        scanf("%c", &ch);
         switch (ch)
         {
         case '1':
@@ -45,11 +45,16 @@ akinatorErrorCode main_akinator_loop()
             if ((error = read_akinator_base(&tree)))
             {
                 printf("Try again!\n");
+                fflush(stdin);
             }
             break;
 
         case '5':
-
+            if ((error = write_akinator_tree_to_file(&tree)))
+            {
+                printf("Try again!\n");
+                fflush(stdin);
+            }
             break;
 
         case '6':
@@ -83,7 +88,26 @@ akinatorErrorCode read_akinator_base(TreeData* tree)
     if (error = read_tree_from_file(tree, filename))
     {
         print_tree_error(error);
-        return READ_TREE_ERROR;
+        return READ_AKINATOR_TREE_ERROR;
+    }
+
+    return NO_AKINATOR_ERRORS;
+}
+
+akinatorErrorCode write_akinator_tree_to_file(TreeData* tree)
+{
+    assert(tree);
+
+    treeErrorCode error = NO_TREE_ERRORS;
+    char filename[FILENAME_LEN] = {};
+
+    printf("Enter filename to write:\n");
+    scanf("%s", filename);
+
+    if (error = wrire_tree_to_file(filename, tree))
+    {
+        print_tree_error(error);
+        return WRIRE_AKINATOR_TREE_ERROR;
     }
 
     return NO_AKINATOR_ERRORS;

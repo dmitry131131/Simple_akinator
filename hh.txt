@@ -1,0 +1,1 @@
+(NONE (8.340000 nil nil) nil) 

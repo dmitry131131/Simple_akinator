@@ -22,7 +22,8 @@ void print_akinator_error_message(akinatorErrorCode error, FILE* stream)
         case NO_AKINATOR_ERRORS:
             break;
 
-        CHECK_CODE(READ_TREE_ERROR,          "Error in file reading process!\n");
+        CHECK_CODE(READ_AKINATOR_TREE_ERROR,          "Error in file reading process!\n");
+        CHECK_CODE(WRIRE_AKINATOR_TREE_ERROR,         "Error in file writing process!\n");
 
     default:
         fprintf(stream, "Unknown error!\n");
