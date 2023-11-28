@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "Tree.h"
+#include "Akinator.h"
 
 void ggg(TreeSegment* seg, double num);
 
@@ -22,6 +23,8 @@ int main()
     }
 
     double num = 0;
+
+    draw_akinator_menu();
 
     scanf("%lf", &num);
 

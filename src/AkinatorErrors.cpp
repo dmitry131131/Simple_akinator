@@ -19,10 +19,10 @@ void print_akinator_error_message(akinatorErrorCode error, FILE* stream)
 
     switch (error)
     {
-        case NO_DATA_BUFFER_ERRORS:
+        case NO_AKINATOR_ERRORS:
             break;
 
-        CHECK_CODE(ALLOC_MEMORY_ERROR,          "Error in calloc, alloced memory for buffer!\n");
+        CHECK_CODE(READ_TREE_ERROR,          "Error in file reading process!\n");
 
     default:
         fprintf(stream, "Unknown error!\n");

@@ -1,0 +1,18 @@
+digraph G{
+rankdir = TB;
+bgcolor = "#FFEFD5";
+node[color = "#800000", fontsize = 10];
+edge[color = "#800000", fontsize = 15];
+
+105827994173456 [shape = Mrecord, style = filled, fillcolor = "#FFF5EE", color = "#800000", label = " {{DATA: 3.000000 | TYPE: 3} | {<fl> LEFT | <fr> RIGHT}} "];
+105827994173712 [shape = Mrecord, style = filled, fillcolor = "#FFF5EE", color = "#800000", label = " {{DATA: 3.000000 | TYPE: 3} | {<fl> LEFT | <fr> RIGHT}} "];
+105827994173456:<fl> -> 105827994173712 [weight = 1, color = "#0000ff"];
+105827994173520 [shape = Mrecord, style = filled, fillcolor = "#FFF5EE", color = "#800000", label = " {{DATA: 4.000000 | TYPE: 3} | {<fl> LEFT | <fr> RIGHT}} "];
+105827994173456:<fr> -> 105827994173520 [weight = 1, color = "#0000ff"];
+105827994173584 [shape = Mrecord, style = filled, fillcolor = "#FFF5EE", color = "#800000", label = " {{DATA: 5.000000 | TYPE: 3} | {<fl> LEFT | <fr> RIGHT}} "];
+105827994173520:<fr> -> 105827994173584 [weight = 1, color = "#0000ff"];
+105827994173648 [shape = Mrecord, style = filled, fillcolor = "#FFF5EE", color = "#800000", label = " {{DATA: 6.000000 | TYPE: 3} | {<fl> LEFT | <fr> RIGHT}} "];
+105827994173584:<fr> -> 105827994173648 [weight = 1, color = "#0000ff"];
+All[shape = Mrecord, label = " HEADER | <f1> ROOT", style = "filled", fillcolor = "#FFF5EE"];
+All:<f1> -> 105827994173456 [color = "#000000"];
+}

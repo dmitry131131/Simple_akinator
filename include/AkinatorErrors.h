@@ -7,8 +7,8 @@
 
 
 enum akinatorErrorCode {
-    NO_DATA_BUFFER_ERRORS,
-    ALLOC_MEMORY_ERROR
+    NO_AKINATOR_ERRORS,
+    READ_TREE_ERROR
 };
 
 void print_akinator_error(akinatorErrorCode error);
