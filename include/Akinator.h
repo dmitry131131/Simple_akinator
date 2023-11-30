@@ -16,6 +16,8 @@ akinatorErrorCode read_akinator_base(TreeData* tree);
 
 akinatorErrorCode write_akinator_tree_to_file(TreeData* tree);
 
+akinatorErrorCode akinator_guess_object(TreeData* tree);
+
 akinatorErrorCode main_akinator_loop();
 
 #endif

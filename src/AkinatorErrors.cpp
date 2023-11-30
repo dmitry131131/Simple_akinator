@@ -24,6 +24,8 @@ void print_akinator_error_message(akinatorErrorCode error, FILE* stream)
 
         CHECK_CODE(READ_AKINATOR_TREE_ERROR,          "Error in file reading process!\n");
         CHECK_CODE(WRIRE_AKINATOR_TREE_ERROR,         "Error in file writing process!\n");
+        CHECK_CODE(CREATE_NEW_TREE_ERROR,             "Error in creating new tree!\n");
+        CHECK_CODE(GUESS_RECURSIVE_ERROR,             "Error guessing element in tree!\n");
 
     default:
         fprintf(stream, "Unknown error!\n");

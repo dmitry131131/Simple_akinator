@@ -3,13 +3,16 @@
  * @brief Main akinator functions sources
 */
 #include <stdio.h>
+#include <string.h>
 #include <assert.h>
 
 #include "AkinatorErrors.h"
 #include "Tree.h"
 #include "Akinator.h"
 
-static void akinator_guess_object_recursive(TreeSegment* segment);
+static treeErrorCode akinator_guess_object_recursive(TreeSegment* segment);
+
+static treeErrorCode add_new_akinator_node(TreeSegment* segment);
 
 static void skip_input();
 
@@ -24,17 +27,16 @@ akinatorErrorCode main_akinator_loop()
     TreeData tree = {};
 
     char ch = 0;
-    bool loop_enable = true;
-    while (loop_enable)
+    while (true)
     {
         draw_akinator_menu();
 
-        scanf("%c", &ch);
+        scanf("%c[^\n]", &ch);
         skip_input();
         switch (ch)
         {
         case '1':
-            
+            akinator_guess_object(&tree);
             break;
         case '2':
 
@@ -106,7 +108,7 @@ akinatorErrorCode write_akinator_tree_to_file(TreeData* tree)
     char filename[FILENAME_LEN] = {};
 
     printf("Enter filename to write:\n");
-    scanf("%s", filename);
+    scanf("%s[^\n]", filename);
 
     if (error = wrire_tree_to_file(filename, tree))
     {
@@ -146,22 +148,37 @@ void draw_akinator_menu()
 akinatorErrorCode akinator_guess_object(TreeData* tree)
 {
     assert(tree);
+    treeErrorCode error = NO_TREE_ERRORS;
 
-    
+    if (!(tree->root))
+    {
+        tree->root = new_segment(TEXT_SEGMENT_DATA, MAX_TEXT_LEN, tree->root, &error);
+        if (error)
+        {
+            return CREATE_NEW_TREE_ERROR;
+        }
+        strcpy(tree->root->data.stringPtr, "Unknown_thing");
+    }
+
+    if ((error = akinator_guess_object_recursive(tree->root)))
+    {
+        return GUESS_RECURSIVE_ERROR;
+    }
 
     return NO_AKINATOR_ERRORS;
 }
 
-static void akinator_guess_object_recursive(TreeSegment* segment)
+static treeErrorCode akinator_guess_object_recursive(TreeSegment* segment)
 {
-    if ((!segment->left) && (!segment->right))
+    treeErrorCode error = NO_TREE_ERRORS;
+    if (!segment)
     {
-        
+        return NULL_SEGMENT_POINTER;
     }
+
     char ch = 0;
     bool workFlag = true;
     
-
     while (workFlag)
     {
         printf("It is %s?\n", segment->data.stringPtr);
@@ -172,22 +189,73 @@ static void akinator_guess_object_recursive(TreeSegment* segment)
         switch (ch)
         {
         case 'y':
-            
+            if (segment->right)
+            {
+                error = akinator_guess_object_recursive(segment->right);
+                workFlag = false;
+            }
+            else
+            {
+                printf("I said, I know this thing\n");
+                workFlag = false;
+            }
             break;
-        case 'n':
 
+        case 'n':
+            if (segment->left)
+            {
+                error = akinator_guess_object_recursive(segment->left);
+                workFlag = false;
+            }
+            else
+            {
+                error = add_new_akinator_node(segment);
+                workFlag = false;
+            }
             break;
         
         default:
-            printf("Please select y or no:");
+            printf("Please select y or n:\n");
             break;
         }
     }
 
+    return error;
+}
+
+static treeErrorCode add_new_akinator_node(TreeSegment* segment)
+{
+    assert(segment);
+    treeErrorCode error = NO_TREE_ERRORS;
+
+    segment->right = new_segment(TEXT_SEGMENT_DATA, MAX_TEXT_LEN, segment, &error);
+    if (error)
+    {
+        return error;
+    }
+
+    segment->left = new_segment(TEXT_SEGMENT_DATA, segment->data_len, segment, &error);
+    if (error)
+    {
+        return error;
+    }
+
+    strncpy(segment->left->data.stringPtr, segment->data.stringPtr, MAX_TEXT_LEN);
+
+    ssize_t position_n = 0;
+    printf("What is it?\n");
+    position_n = getline(&(segment->right->data.stringPtr), &(segment->right->data_len), stdin);
+    segment->right->data.stringPtr[position_n - 1] = '\0';
+    
+    printf("What the difference betwin %s and %s?\n", segment->right->data.stringPtr, segment->left->data.stringPtr);
+    position_n = getline(&(segment->data.stringPtr), &(segment->data_len), stdin);
+    segment->data.stringPtr[position_n - 1] = '\0';
+
+    return NO_TREE_ERRORS;
 }
 
 static void skip_input()
 {
     int ch = 0;
-    while ((ch = getchar()) != '\n') {}
+    while ((ch = getchar()) != '\n' || (ch == EOF)) {}
 }
