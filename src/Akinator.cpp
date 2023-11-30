@@ -11,6 +11,8 @@
 
 static void akinator_guess_object_recursive(TreeSegment* segment);
 
+static void skip_input();
+
 akinatorErrorCode main_akinator_loop()
 {
     #define RETURN(code) do {         \
@@ -28,6 +30,7 @@ akinatorErrorCode main_akinator_loop()
         draw_akinator_menu();
 
         scanf("%c", &ch);
+        skip_input();
         switch (ch)
         {
         case '1':
@@ -84,6 +87,7 @@ akinatorErrorCode read_akinator_base(TreeData* tree)
 
     printf("Enter filename to read:\n");
     scanf("%s", filename);
+    skip_input();
 
     if (error = read_tree_from_file(tree, filename))
     {
@@ -143,12 +147,47 @@ akinatorErrorCode akinator_guess_object(TreeData* tree)
 {
     assert(tree);
 
-
+    
 
     return NO_AKINATOR_ERRORS;
 }
 
 static void akinator_guess_object_recursive(TreeSegment* segment)
 {
+    if ((!segment->left) && (!segment->right))
+    {
+        
+    }
+    char ch = 0;
+    bool workFlag = true;
     
+
+    while (workFlag)
+    {
+        printf("It is %s?\n", segment->data.stringPtr);
+        printf("[y/n]\n");
+        scanf("%c", &ch);
+        skip_input();
+
+        switch (ch)
+        {
+        case 'y':
+            
+            break;
+        case 'n':
+
+            break;
+        
+        default:
+            printf("Please select y or no:");
+            break;
+        }
+    }
+
+}
+
+static void skip_input()
+{
+    int ch = 0;
+    while ((ch = getchar()) != '\n') {}
 }
