@@ -87,15 +87,18 @@ akinatorErrorCode main_akinator_loop()
 akinatorErrorCode read_akinator_base(TreeData* tree)
 {
     assert(tree);
+    #define DTOR do{                        \
+        if (tree_dtor(tree))                \
+        {                                   \
+            return ERROR_IN_TREE_DTOR;      \
+        }                                   \
+    }while(0)
 
     treeErrorCode error = NO_TREE_ERRORS;
 
     if (tree->root)
     {
-        if (tree_dtor(tree))
-        {
-            return ERROR_IN_TREE_DTOR;
-        }
+        DTOR;
     }
 
     char filename[FILENAME_LEN] = {};
@@ -107,10 +110,12 @@ akinatorErrorCode read_akinator_base(TreeData* tree)
     if (error = read_tree_from_file(tree, filename))
     {
         print_tree_error(error);
+        DTOR;
         return READ_AKINATOR_TREE_ERROR;
     }
 
     return NO_AKINATOR_ERRORS;
+    #undef DTOR
 }
 
 akinatorErrorCode write_akinator_tree_to_file(TreeData* tree)

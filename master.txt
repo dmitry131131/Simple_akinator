@@ -1,5 +1,0 @@
-(gay
- ( nil nil) (suck
- (master
- nil nil) (slave
- nil nil) ) ) 
