@@ -18,9 +18,13 @@ static void skip_input();
 
 akinatorErrorCode main_akinator_loop()
 {
-    #define RETURN(code) do {         \
-        tree_dtor(&tree);             \
-        return code;                  \
+    #define RETURN(code) do {                       \
+        treeErrorCode treeErr;                      \
+        if((treeErr = tree_dtor(&tree)))            \
+        {                                           \
+            print_tree_error(treeErr);              \
+        }                                           \
+        return code;                                \
     }while(0)
 
     akinatorErrorCode error = NO_AKINATOR_ERRORS;
@@ -85,6 +89,15 @@ akinatorErrorCode read_akinator_base(TreeData* tree)
     assert(tree);
 
     treeErrorCode error = NO_TREE_ERRORS;
+
+    if (tree->root)
+    {
+        if (tree_dtor(tree))
+        {
+            return ERROR_IN_TREE_DTOR;
+        }
+    }
+
     char filename[FILENAME_LEN] = {};
 
     printf("Enter filename to read:\n");

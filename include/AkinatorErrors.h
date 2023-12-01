@@ -11,7 +11,8 @@ enum akinatorErrorCode {
     READ_AKINATOR_TREE_ERROR,
     WRIRE_AKINATOR_TREE_ERROR,
     CREATE_NEW_TREE_ERROR,
-    GUESS_RECURSIVE_ERROR
+    GUESS_RECURSIVE_ERROR,
+    ERROR_IN_TREE_DTOR
 };
 
 void print_akinator_error(akinatorErrorCode error);

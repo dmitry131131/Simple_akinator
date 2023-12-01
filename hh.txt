@@ -1,1 +1,1 @@
-(gay (Unknown_thing nil nil) (suck (master nil nil) (slave nil nil)))
+(gay (Unknown_thing nil nil) (master nil nil))
