@@ -62,8 +62,11 @@ akinatorErrorCode main_akinator_loop()
             break;
 
         case '3':
-            printf("Root: %p\n", tree.root);
-            printf("Root parent: %p\n", tree.root->parent);
+            if ((error = give_object_diff(&tree)))
+            {
+                print_akinator_error(error);
+            }
+            __fpurge(stdin);
             break;
 
         case '4':
@@ -98,6 +101,42 @@ akinatorErrorCode main_akinator_loop()
     #undef RETURN
 }
 
+akinatorErrorCode give_object_diff(TreeData* tree)
+{
+    assert(tree);
+
+    if (!(tree->root))
+    {
+        return AKINATOR_TREE_IS_NOT_EXIST;
+    }
+
+    char first[MAX_TEXT_LEN]  = {};
+    char second[MAX_TEXT_LEN] = {};
+
+    printf("Please enter first object name: \n");
+    scanf("%s", first);
+
+    TreeSegment* first_seg = find_segment(tree, first);
+
+    if (!first_seg)
+    {
+        printf("Object not found!\n");
+        return NO_AKINATOR_ERRORS;
+    }
+
+    printf("Please enter second object name: \n");
+    scanf("%s", second);
+
+    TreeSegment* second_seg = find_segment(tree, second);
+
+    if (!second_seg)
+    {
+        printf("Object not found!\n");
+        return NO_AKINATOR_ERRORS;
+    }
+
+}
+
 akinatorErrorCode give_object_description(TreeData* tree)
 {
     assert(tree);
@@ -121,13 +160,13 @@ akinatorErrorCode give_object_description(TreeData* tree)
         return NO_AKINATOR_ERRORS;
     }
 
-    printf("This object is: ");
+    printf("This object: ");
 
     error = give_object_description_recursive(seg);
 
     printf("\n");
 
-    return NO_AKINATOR_ERRORS;
+    return error;
 }
 
 static akinatorErrorCode give_object_description_recursive(TreeSegment* segment)

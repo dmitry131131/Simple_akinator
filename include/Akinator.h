@@ -20,6 +20,8 @@ akinatorErrorCode akinator_guess_object(TreeData* tree);
 
 akinatorErrorCode give_object_description(TreeData* tree);
 
+akinatorErrorCode give_object_diff(TreeData* tree);
+
 akinatorErrorCode main_akinator_loop();
 
 #endif
