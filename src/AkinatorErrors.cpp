@@ -30,6 +30,7 @@ void print_akinator_error_message(akinatorErrorCode error, FILE* stream)
         CHECK_CODE(FIND_AKINATOR_SEGMENT_ERROR,       "Error in finding segment!\n");
         CHECK_CODE(AKINATOR_TREE_IS_NOT_EXIST,        "Akinator tree is not exist!\n");
         CHECK_CODE(AKINATOR_TREE_DTOR_ERROR,          "Akinator tree dtor error!\n");
+        CHECK_CODE(NULL_AKINATOR_SEGMENT,             "NULL akinator segment given!\n");
 
     default:
         fprintf(stream, "Unknown error!\n");

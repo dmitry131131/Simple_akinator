@@ -12,11 +12,22 @@
 #include "Tree.h"
 #include "Akinator.h"
 
+struct Call_array
+{
+    const TreeSegment** array;
+    size_t len;
+};
+
+
 static treeErrorCode akinator_guess_object_recursive(TreeSegment* segment);
 
 static akinatorErrorCode give_object_description_recursive(TreeSegment* segment);
 
 static treeErrorCode add_new_akinator_node(TreeSegment* segment);
+
+static akinatorErrorCode object_compare(const TreeSegment* first, const TreeSegment* second);
+
+static size_t give_tree_depth(const TreeSegment* start_segment);
 
 static void skip_input();
 
@@ -102,6 +113,19 @@ akinatorErrorCode main_akinator_loop()
     #undef RETURN
 }
 
+#define CHECK_OBJ(obj) do{                                      \
+    if (!(obj))                                                 \
+    {                                                           \
+        printf("Object not found!\n");                          \
+        return NO_AKINATOR_ERRORS;                              \
+    }                                                           \
+    if (((obj)->left != NULL) || ((obj)->right != NULL))        \
+    {                                                           \
+        printf("Object not found!\n");                          \
+        return NO_AKINATOR_ERRORS;                              \
+    }                                                           \
+}while(0)
+
 akinatorErrorCode give_object_diff(TreeData* tree)
 {
     assert(tree);
@@ -110,6 +134,7 @@ akinatorErrorCode give_object_diff(TreeData* tree)
     {
         return AKINATOR_TREE_IS_NOT_EXIST;
     }
+    akinatorErrorCode error = NO_AKINATOR_ERRORS;
 
     char* first  = NULL;
     char* second = NULL;
@@ -118,30 +143,123 @@ akinatorErrorCode give_object_diff(TreeData* tree)
     scanf("%ms", &first);
 
     TreeSegment* first_seg = find_segment(tree, first);
-
     free(first);
-
-    if (!first_seg)
-    {
-        printf("Object not found!\n");
-        return NO_AKINATOR_ERRORS;
-    }
+    first = NULL;
+    CHECK_OBJ(first_seg);
 
     printf("Please enter second object name: \n");
     scanf("%ms", &second);
 
     TreeSegment* second_seg = find_segment(tree, second);
-
     free(second);
+    first = NULL;
+    CHECK_OBJ(second_seg);
 
-    if (!second_seg)
+    if ((error = object_compare(first_seg, second_seg)))
     {
-        printf("Object not found!\n");
-        return NO_AKINATOR_ERRORS;
+        return error;
     }
 
     return NO_AKINATOR_ERRORS;
 
+}
+
+static akinatorErrorCode object_compare(const TreeSegment* first, const TreeSegment* second)
+{
+    if (!first || !second)
+    {
+        return NULL_AKINATOR_SEGMENT;
+    }
+
+    Call_array first_call_array  = {};
+    Call_array second_call_array = {};
+
+    first_call_array.len  = give_tree_depth(first);
+    second_call_array.len = give_tree_depth(second);
+
+    printf("First len: %lu\n", first_call_array.len);
+    printf("Second len: %lu\n", second_call_array.len);
+
+    first_call_array.array  = (const TreeSegment**) calloc(first_call_array.len  + 1, sizeof(TreeSegment*));
+    second_call_array.array = (const TreeSegment**) calloc(second_call_array.len + 1, sizeof(TreeSegment*));
+
+    size_t count = 0;
+    const TreeSegment* seg = first;
+    while(seg->parent)
+    {
+        (first_call_array.array)[first_call_array.len - count] = seg;
+        seg = seg->parent;
+        count++;
+    }
+    (first_call_array.array)[first_call_array.len - count] = seg;
+
+    count = 0;
+    seg = second;
+    while(seg->parent)
+    {
+        (second_call_array.array)[second_call_array.len - count] = seg;
+        seg = seg->parent;
+        count++;
+    }
+    (second_call_array.array)[second_call_array.len - count] = seg;
+
+    printf("Both of them are: \n");
+
+    count = 0;
+    while (((first_call_array.array)[count]     == (second_call_array.array)[count]) 
+        && ((first_call_array.array)[count + 1] == (second_call_array.array)[count + 1]))
+    {
+        if ((first_call_array.array)[count]->left == (first_call_array.array)[count + 1])
+        {
+            printf("not ");
+        }
+
+        printf("%s, ", (first_call_array.array)[count]->data.stringPtr);
+        count++;
+    }
+
+    printf("\nBut %s is: \n", first->data.stringPtr);
+    for (size_t i = count; i < first_call_array.len; i++)
+    {
+        if ((first_call_array.array)[i]->left == (first_call_array.array)[i + 1])
+        {
+            printf("not ");
+        }
+
+        printf("%s, ", (first_call_array.array)[i]->data.stringPtr);
+    }
+
+    printf("\nAnd %s is: \n", second->data.stringPtr);
+    for (size_t i = count; i < second_call_array.len; i++)
+    {
+        if ((second_call_array.array)[i]->left == (second_call_array.array)[i + 1])
+        {
+            printf("not ");
+        }
+
+        printf("%s, ", (second_call_array.array)[i]->data.stringPtr);
+    }
+
+    printf("\n");
+
+    free(first_call_array.array);
+    free(second_call_array.array);
+
+    return NO_AKINATOR_ERRORS;
+}
+
+static size_t give_tree_depth(const TreeSegment* start_segment)
+{
+    assert(start_segment);
+    size_t count = 0;
+    const TreeSegment* seg = start_segment;
+    while (seg->parent) 
+    {
+        seg = seg->parent;
+        count++;
+    }
+
+    return count;
 }
 
 akinatorErrorCode give_object_description(TreeData* tree)
@@ -163,16 +281,7 @@ akinatorErrorCode give_object_description(TreeData* tree)
 
     free(text);
 
-    if (!seg)
-    {
-        printf("Object not found!\n");
-        return NO_AKINATOR_ERRORS;
-    }
-    if ((seg->left != NULL) || (seg->right != NULL))
-    {
-        printf("Object not found!\n");
-        return NO_AKINATOR_ERRORS;
-    }
+    CHECK_OBJ(seg);
 
     printf("This object: ");
 
@@ -182,6 +291,8 @@ akinatorErrorCode give_object_description(TreeData* tree)
 
     return error;
 }
+
+#undef CHECK_OBJ
 
 static akinatorErrorCode give_object_description_recursive(TreeSegment* segment)
 {

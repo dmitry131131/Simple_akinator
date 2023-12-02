@@ -15,7 +15,8 @@ enum akinatorErrorCode {
     ERROR_IN_TREE_DTOR,
     FIND_AKINATOR_SEGMENT_ERROR,
     AKINATOR_TREE_IS_NOT_EXIST,
-    AKINATOR_TREE_DTOR_ERROR
+    AKINATOR_TREE_DTOR_ERROR,
+    NULL_AKINATOR_SEGMENT
 };
 
 void print_akinator_error(akinatorErrorCode error);
