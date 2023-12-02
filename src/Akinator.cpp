@@ -86,6 +86,7 @@ akinatorErrorCode main_akinator_loop()
             {
                 printf("Try again!\n");
             }
+            __fpurge(stdin);
             break;
 
         case '5':
@@ -93,6 +94,7 @@ akinatorErrorCode main_akinator_loop()
             {
                 printf("Try again!\n");
             }
+            __fpurge(stdin);
             break;
 
         case '6':
