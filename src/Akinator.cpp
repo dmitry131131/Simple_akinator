@@ -154,14 +154,21 @@ akinatorErrorCode give_object_description(TreeData* tree)
         return AKINATOR_TREE_IS_NOT_EXIST;
     }
 
-    char text[MAX_TEXT_LEN] = {};
+    char* text = NULL;
 
     printf("Please enter object name: \n");
-    scanf("%s", text);
+    scanf("%ms", &text);
 
     TreeSegment* seg = find_segment(tree, text);
 
+    free(text);
+
     if (!seg)
+    {
+        printf("Object not found!\n");
+        return NO_AKINATOR_ERRORS;
+    }
+    if ((seg->left != NULL) || (seg->right != NULL))
     {
         printf("Object not found!\n");
         return NO_AKINATOR_ERRORS;
