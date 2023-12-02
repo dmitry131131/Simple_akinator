@@ -4,6 +4,7 @@
 */
 #include <stdio.h>
 #include <stdio_ext.h>
+#include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 
@@ -110,13 +111,15 @@ akinatorErrorCode give_object_diff(TreeData* tree)
         return AKINATOR_TREE_IS_NOT_EXIST;
     }
 
-    char first[MAX_TEXT_LEN]  = {};
-    char second[MAX_TEXT_LEN] = {};
+    char* first  = NULL;
+    char* second = NULL;
 
     printf("Please enter first object name: \n");
-    scanf("%s", first);
+    scanf("%ms", &first);
 
     TreeSegment* first_seg = find_segment(tree, first);
+
+    free(first);
 
     if (!first_seg)
     {
@@ -125,15 +128,19 @@ akinatorErrorCode give_object_diff(TreeData* tree)
     }
 
     printf("Please enter second object name: \n");
-    scanf("%s", second);
+    scanf("%ms", &second);
 
     TreeSegment* second_seg = find_segment(tree, second);
+
+    free(second);
 
     if (!second_seg)
     {
         printf("Object not found!\n");
         return NO_AKINATOR_ERRORS;
     }
+
+    return NO_AKINATOR_ERRORS;
 
 }
 
@@ -207,11 +214,6 @@ akinatorErrorCode read_akinator_base(TreeData* tree)
     }while(0)
 
     treeErrorCode error = NO_TREE_ERRORS;
-
-    if (tree->root)
-    {
-        DTOR;
-    }
 
     char filename[FILENAME_LEN] = {};
 
