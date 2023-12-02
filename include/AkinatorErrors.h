@@ -12,7 +12,10 @@ enum akinatorErrorCode {
     WRIRE_AKINATOR_TREE_ERROR,
     CREATE_NEW_TREE_ERROR,
     GUESS_RECURSIVE_ERROR,
-    ERROR_IN_TREE_DTOR
+    ERROR_IN_TREE_DTOR,
+    FIND_AKINATOR_SEGMENT_ERROR,
+    AKINATOR_TREE_IS_NOT_EXIST,
+    AKINATOR_TREE_DTOR_ERROR
 };
 
 void print_akinator_error(akinatorErrorCode error);

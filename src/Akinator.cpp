@@ -3,6 +3,7 @@
  * @brief Main akinator functions sources
 */
 #include <stdio.h>
+#include <stdio_ext.h>
 #include <string.h>
 #include <assert.h>
 
@@ -12,19 +13,25 @@
 
 static treeErrorCode akinator_guess_object_recursive(TreeSegment* segment);
 
+static akinatorErrorCode give_object_description_recursive(TreeSegment* segment);
+
 static treeErrorCode add_new_akinator_node(TreeSegment* segment);
 
 static void skip_input();
 
 akinatorErrorCode main_akinator_loop()
 {
-    #define RETURN(code) do {                       \
-        treeErrorCode treeErr;                      \
-        if((treeErr = tree_dtor(&tree)))            \
-        {                                           \
-            print_tree_error(treeErr);              \
-        }                                           \
-        return code;                                \
+    #define RETURN(code) do {                           \
+        treeErrorCode treeErr;                          \
+        if (tree.root)                                  \
+        {                                               \
+            if((treeErr = tree_dtor(&tree)))            \
+            {                                           \
+                print_tree_error(treeErr);              \
+                return AKINATOR_TREE_DTOR_ERROR;        \
+            }                                           \
+        }                                               \
+        return code;                                    \
     }while(0)
 
     akinatorErrorCode error = NO_AKINATOR_ERRORS;
@@ -36,25 +43,33 @@ akinatorErrorCode main_akinator_loop()
         draw_akinator_menu();
 
         scanf("%c[^\n]", &ch);
-        skip_input();
+        __fpurge(stdin);
         switch (ch)
         {
         case '1':
-            akinator_guess_object(&tree);
+            if ((error = akinator_guess_object(&tree)))
+            {
+                print_akinator_error(error);
+            }
+            __fpurge(stdin);
             break;
         case '2':
-
+            if ((error = give_object_description(&tree)))
+            {
+                print_akinator_error(error);
+            }
+            __fpurge(stdin);
             break;
 
         case '3':
-
+            printf("Root: %p\n", tree.root);
+            printf("Root parent: %p\n", tree.root->parent);
             break;
 
         case '4':
             if ((error = read_akinator_base(&tree)))
             {
                 printf("Try again!\n");
-                fflush(stdin);
             }
             break;
 
@@ -62,7 +77,6 @@ akinatorErrorCode main_akinator_loop()
             if ((error = write_akinator_tree_to_file(&tree)))
             {
                 printf("Try again!\n");
-                fflush(stdin);
             }
             break;
 
@@ -82,6 +96,65 @@ akinatorErrorCode main_akinator_loop()
 
     RETURN(error);
     #undef RETURN
+}
+
+akinatorErrorCode give_object_description(TreeData* tree)
+{
+    assert(tree);
+    akinatorErrorCode error = NO_AKINATOR_ERRORS;
+
+    if (!(tree->root))
+    {
+        return AKINATOR_TREE_IS_NOT_EXIST;
+    }
+
+    char text[MAX_TEXT_LEN] = {};
+
+    printf("Please enter object name: \n");
+    scanf("%s", text);
+
+    TreeSegment* seg = find_segment(tree, text);
+
+    if (!seg)
+    {
+        printf("Object not found!\n");
+        return NO_AKINATOR_ERRORS;
+    }
+
+    printf("This object is: ");
+
+    error = give_object_description_recursive(seg);
+
+    printf("\n");
+
+    return NO_AKINATOR_ERRORS;
+}
+
+static akinatorErrorCode give_object_description_recursive(TreeSegment* segment)
+{
+    akinatorErrorCode error = NO_AKINATOR_ERRORS;
+    if (!segment)
+    {
+        return FIND_AKINATOR_SEGMENT_ERROR;
+    }
+
+    if (segment->parent == nullptr)
+    {
+        return NO_AKINATOR_ERRORS;
+    }
+
+    if (segment->parent->right == segment)
+    {
+        printf("is %s, ", segment->parent->data.stringPtr);
+    }
+    else if (segment->parent->left == segment)
+    {
+        printf("is not %s, ", segment->parent->data.stringPtr);
+    }
+    
+    error = give_object_description_recursive(segment->parent);
+
+    return error;
 }
 
 akinatorErrorCode read_akinator_base(TreeData* tree)
@@ -107,7 +180,7 @@ akinatorErrorCode read_akinator_base(TreeData* tree)
     scanf("%s", filename);
     skip_input();
 
-    if (error = read_tree_from_file(tree, filename))
+    if ((error = read_tree_from_file(tree, filename)))
     {
         print_tree_error(error);
         DTOR;
@@ -128,7 +201,7 @@ akinatorErrorCode write_akinator_tree_to_file(TreeData* tree)
     printf("Enter filename to write:\n");
     scanf("%s[^\n]", filename);
 
-    if (error = wrire_tree_to_file(filename, tree))
+    if ((error = wrire_tree_to_file(filename, tree)))
     {
         print_tree_error(error);
         return WRIRE_AKINATOR_TREE_ERROR;
@@ -275,5 +348,5 @@ static treeErrorCode add_new_akinator_node(TreeSegment* segment)
 static void skip_input()
 {
     int ch = 0;
-    while ((ch = getchar()) != '\n' || (ch == EOF)) {}
+    while ((ch = getchar()) != '\n' && (ch != EOF)) {}
 }
