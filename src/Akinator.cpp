@@ -372,7 +372,10 @@ static treeErrorCode add_new_akinator_node(TreeSegment* segment)
         return error;
     }
 
-    strncpy(segment->left->data.stringPtr, segment->data.stringPtr, MAX_TEXT_LEN);
+    if ((error = copy_segment(segment->left, segment)))
+    {
+        return error;
+    }
 
     ssize_t position_n = 0;
     printf("What is it?\n");
