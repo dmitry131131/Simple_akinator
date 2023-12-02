@@ -287,7 +287,9 @@ akinatorErrorCode akinator_guess_object(TreeData* tree)
         {
             return CREATE_NEW_TREE_ERROR;
         }
-        strcpy(tree->root->data.stringPtr, "Unknown_thing");
+        int count = 0;
+        sscanf("Unknown_thing", "%ms%n", &(tree->root->data.stringPtr), &count);
+        tree->root->data_len = (size_t) count;
     }
 
     if ((error = akinator_guess_object_recursive(tree->root)))
