@@ -140,9 +140,13 @@ akinatorErrorCode give_object_diff(TreeData* tree)
 
     char* first  = NULL;
     char* second = NULL;
+    size_t len = 0;
 
     printf("Please enter first object name: \n");
-    scanf("%ms", &first);
+
+    ssize_t position_n = 0;
+    position_n = getline(&first, &(len), stdin);
+    first[position_n - 1] = '\0';
 
     TreeSegment* first_seg = find_segment(tree, first);
     free(first);
@@ -150,7 +154,10 @@ akinatorErrorCode give_object_diff(TreeData* tree)
     CHECK_OBJ(first_seg);
 
     printf("Please enter second object name: \n");
-    scanf("%ms", &second);
+
+    position_n = 0;
+    position_n = getline(&second, &(len), stdin);
+    second[position_n - 1] = '\0';
 
     TreeSegment* second_seg = find_segment(tree, second);
     free(second);
@@ -163,7 +170,6 @@ akinatorErrorCode give_object_diff(TreeData* tree)
     }
 
     return NO_AKINATOR_ERRORS;
-
 }
 
 static akinatorErrorCode object_compare(const TreeSegment* first, const TreeSegment* second)
@@ -178,9 +184,6 @@ static akinatorErrorCode object_compare(const TreeSegment* first, const TreeSegm
 
     first_call_array.len  = give_tree_depth(first);
     second_call_array.len = give_tree_depth(second);
-
-    printf("First len: %lu\n", first_call_array.len);
-    printf("Second len: %lu\n", second_call_array.len);
 
     first_call_array.array  = (const TreeSegment**) calloc(first_call_array.len  + 1, sizeof(TreeSegment*));
     second_call_array.array = (const TreeSegment**) calloc(second_call_array.len + 1, sizeof(TreeSegment*));
@@ -275,9 +278,13 @@ akinatorErrorCode give_object_description(TreeData* tree)
     }
 
     char* text = NULL;
+    size_t len = 0;
 
     printf("Please enter object name: \n");
-    scanf("%ms", &text);
+
+    ssize_t position_n = 0;
+    position_n = getline(&text, &(len), stdin);
+    text[position_n - 1] = '\0';
 
     TreeSegment* seg = find_segment(tree, text);
 
