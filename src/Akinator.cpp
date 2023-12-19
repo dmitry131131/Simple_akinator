@@ -52,6 +52,7 @@ akinatorErrorCode main_akinator_loop()
     char ch = 0;
     while (true)
     {
+        error = NO_AKINATOR_ERRORS;
         draw_akinator_menu();
 
         scanf("%c[^\n]", &ch);
@@ -351,7 +352,6 @@ akinatorErrorCode read_akinator_base(TreeData* tree)
     if ((error = read_tree_from_file(tree, filename)))
     {
         print_tree_error(error);
-        DTOR;
         return READ_AKINATOR_TREE_ERROR;
     }
 
